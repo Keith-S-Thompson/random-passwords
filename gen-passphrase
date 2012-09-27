@@ -1,0 +1,161 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use File::Spec ();
+use Getopt::Long ();
+use Math::BigInt ();
+use Math::BigFloat ();
+
+my $Program_Name = (File::Spec->splitpath($0))[2];
+
+my $default_dictionary = '/usr/share/dict/words';
+
+my %Opt = ( dictionary => defined $ENV{PASSPHRASE_DICT}
+                                ? $ENV{PASSPHRASE_DICT}
+                                : $default_dictionary );
+my @Opts = ( \%Opt, qw( help!
+                        verbose!
+                        dictionary=s ) );
+
+Getopt::Long::GetOptions @Opts or Usage();
+Usage() if $Opt{help};
+
+
+Usage() if scalar @ARGV != 3 or
+           $ARGV[0] !~ /^[a-z]+$/ or
+           $ARGV[1] !~ /^\d+$/ or
+           $ARGV[2] !~ /^\d+$/;
+
+my($initials, $min_len, $max_len) = @ARGV;
+Usage("max_len must be >= min_len\n") if $max_len < $min_len;
+
+# print "Initials: ", join('|', @initials), "\n";
+# print "min_len: $min_len\n";
+# print "max_len: $max_len\n";
+
+my @words = ();
+
+#
+# Slurp all lowercase words from the dictionary file into an array.
+#
+open my $DICT, '<', $Opt{dictionary} or die "$Opt{dictionary}: $!\n";
+while (<$DICT>) {
+    chomp;
+    next if not /^[a-z]+$/;
+    push @words, $_;
+}
+close $DICT;
+
+# print scalar @words, " words\n";
+
+my @passphrase = ();
+
+my @counts = ();
+my @errors = ();
+
+#
+# Generate the passphrase
+#
+foreach my $initial (split //, $initials) {
+    my @candidates = Words($initial, $min_len, $max_len);
+    my $s = @candidates == 1 ? '' : 's';
+    if (@candidates) {
+        push @counts, scalar @candidates;
+        my $index = int(rand(scalar @candidates));
+        push @passphrase, $candidates[$index];
+
+    }
+    else {
+        my $len = $min_len;
+        $len .= "..$max_len" if $max_len > $min_len;
+        push @errors, "No words starting with '$initial' with $len letters\n";
+    }
+}
+
+if (@errors) {
+    die @errors;
+}
+
+print "@passphrase\n";
+if ($Opt{verbose}) {
+    print "    ", join(' * ', @counts), "\n";
+    my $possibilities = Math::BigInt->new(1);
+    foreach my $count (@counts) {
+        $possibilities *= $count;
+    }
+    my $f_possibilities = Math::BigFloat->new($possibilities);
+    print "    ", Image($possibilities), " possibilities, equivalent to:\n";
+    my $log_possibilities = log($f_possibilities);
+    printf "    %.2f random bits,\n" .
+           "    %.2f random lowercase letters,\n" .
+           "    %.2f random mixed-case alphanumerics,\n" .
+           "    %.2f random printable ASCII characters\n",
+           $log_possibilities / log(2),
+           $log_possibilities / log(26), # a-z
+           $log_possibilities / log(62), # a-zA-Z0-9
+           $log_possibilities / log(94); # !-~
+}
+
+########################################################################
+
+#
+# Returns a list of words satisfying the specified criteria
+#
+sub Words {
+    my($initial, $min_len, $max_len) = @_;
+    return grep { substr($_, 0, 1) eq $initial and
+                  length $_ >= $min_len and
+                  length $_ <= $max_len } @words;
+}
+
+# ----------------------------------------------------------------------
+
+#
+# Insert commas into a string, e.g., "1234567" --> "1,234,567"
+#
+sub Comma {
+    my($num) = sprintf "%.0f", $_[0];
+    $num = reverse $num;
+    $num =~ s/.../$&,/g;
+    $num = reverse $num;
+    $num =~ s/^,//;
+    return $num;
+}
+
+# ----------------------------------------------------------------------
+
+sub Image {
+    my($num) = @_;
+    if ($num < 10000) {
+        return $num;
+    }
+    elsif ($num < 1e9) {
+        return Comma $num;
+    }
+    else {
+        $num = Math::BigFloat->new($num);
+        my $exp = int($num->copy()->blog(10));
+        my $digits = substr($num->bstr(), 0, 5);
+        $digits =~ s/^./$&./;
+        return "${digits}e$exp";
+    }
+}
+
+# ----------------------------------------------------------------------
+
+sub Usage {
+    print <<"EOF";
+@{_}Usage: $Program_Name [options] initials min-len max-len
+    -help             Show this message and exit
+    -verbose          Show statistics about the strength of the passphrase
+    -dictionary file  Use specified word list
+                      Default is $default_dictionary or \$PASSPHRASE_DICT
+The passphrase consists of a sequence of words randomly selected
+from the specified word list file.
+"initials" is a string of lowercase letters
+"min-len" and "max-len" determine the lengths of the chosen words
+EOF
+    exit 1;
+} # Usage
