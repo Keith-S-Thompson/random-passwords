@@ -45,6 +45,7 @@ my @words = ();
 open my $DICT, '<', $Opt{dictionary} or die "$Opt{dictionary}: $!\n";
 while (<$DICT>) {
     chomp;
+    s/\r$//;
     next if not /^[a-z]+$/;
     push @words, $_;
 }
