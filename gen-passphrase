@@ -17,7 +17,9 @@ my %Opt = ( dictionary => defined $ENV{PASSPHRASE_DICT}
                                 : $default_dictionary );
 my @Opts = ( \%Opt, qw( help!
                         verbose!
-                        dictionary=s ) );
+                        dictionary=s
+                        dev-random!
+                        debugging! ) );
 
 Getopt::Long::GetOptions @Opts or Usage();
 Usage() if $Opt{help};
@@ -63,7 +65,7 @@ foreach my $initial (split //, $initials) {
     my $s = @candidates == 1 ? '' : 's';
     if (@candidates) {
         push @counts, scalar @candidates;
-        my $index = int(rand(scalar @candidates));
+        my $index = Random(scalar @candidates);
         push @passphrase, $candidates[$index];
 
     }
@@ -99,6 +101,46 @@ if ($Opt{verbose}) {
 }
 
 ########################################################################
+
+#
+# Random($upper) returns a random number in the range 0 .. $upper-1
+#
+sub Random {
+    my($upper) = @_;
+    my $buf;
+    my $short_bound = 2**16;
+    my $value_bound = $short_bound - ($short_bound % $upper);
+    my $value;
+
+    # Values read from the device will be in the range 0 .. $short_bound-1
+    # (0..65535).  Repeat if necessary to get a value in the range
+    # 0..$value_bound-1, which is computed to avoid bias; the number of possible
+    # values read is a multiple of $upper.
+
+    my $device = $Opt{'dev-random'} ? '/dev/random' : '/dev/urandom';
+    Debug("Reading from $device\n");
+    open my $RANDOM, $device or die "${device}: $!\n";
+
+    #
+    # Read 2 bytes from device.
+    # Discard high values to avoid bias.
+    #
+    do {
+        my $bytes_read = read $RANDOM, $buf, 2;
+        die "Failed to read from $device\n" if $bytes_read != 2;
+        $value = unpack 'S', $buf;
+        Debugf("Read value 0x%04x\n", $value);
+    } while $value >= $value_bound;
+
+    close $RANDOM;
+
+    my $result = $value % $upper;
+    Debugf("Random: 0x%04x %% %d --> %d\n",
+           $value, $upper, $result);
+    return $result;
+} # Random
+
+# ----------------------------------------------------------------------
 
 #
 # Returns a list of words satisfying the specified criteria
@@ -152,6 +194,8 @@ sub Usage {
     -verbose          Show statistics about the strength of the passphrase
     -dictionary file  Use specified word list
                       Default is $default_dictionary or \$PASSPHRASE_DICT
+    -dev-random       Use /dev/random rather than /dev/urandom (slow)
+    -debugging        Produce debugging output
 The passphrase consists of a sequence of words randomly selected
 from the specified word list file.
 "initials" is a string of lowercase letters
@@ -159,3 +203,15 @@ from the specified word list file.
 EOF
     exit 1;
 } # Usage
+
+# ----------------------------------------------------------------------
+
+sub Debug {
+    print @_ if $Opt{debugging};
+} # Debug
+
+# ----------------------------------------------------------------------
+
+sub Debugf {
+    printf @_ if $Opt{debugging};
+} # Debugf
