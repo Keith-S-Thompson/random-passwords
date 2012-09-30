@@ -24,18 +24,15 @@ my @Opts = ( \%Opt, qw( help!
 Getopt::Long::GetOptions @Opts or Usage();
 Usage() if $Opt{help};
 
+Usage() unless scalar @ARGV == 3 and
+               ($ARGV[0] =~ /^[a-z]+$/ or $ARGV[0] =~ /^\d+$/) and
+               $ARGV[1] =~ /^\d+$/ and
+               $ARGV[2] =~ /^\d+$/;
 
-Usage() if scalar @ARGV != 3 or
-           $ARGV[0] !~ /^[a-z]+$/ or
-           $ARGV[1] !~ /^\d+$/ or
-           $ARGV[2] !~ /^\d+$/;
-
-my($initials, $min_len, $max_len) = @ARGV;
+my($selector, $min_len, $max_len) = @ARGV;
 Usage("max_len must be >= min_len\n") if $max_len < $min_len;
 
-# print "Initials: ", join('|', @initials), "\n";
-# print "min_len: $min_len\n";
-# print "max_len: $max_len\n";
+my $use_initials = ($selector =~ /^[a-z]+$/);
 
 my @words = ();
 
@@ -58,22 +55,49 @@ my @passphrase = ();
 my @counts = ();
 my @errors = ();
 
+my $stats = '';
+
 #
 # Generate the passphrase
 #
-foreach my $initial (split //, $initials) {
-    my @candidates = Words($initial, $min_len, $max_len);
-    my $s = @candidates == 1 ? '' : 's';
-    if (@candidates) {
-        push @counts, scalar @candidates;
-        my $index = Random(scalar @candidates);
-        push @passphrase, $candidates[$index];
+if ($use_initials) {
+    #
+    # The first program argument gives the initials of the generated
+    # passphrase.
+    #
+    foreach my $initial (split //, $selector) {
+        my @candidates = Words($initial, $min_len, $max_len);
+        my $s = scalar @candidates == 1 ? '' : 's';
+        if (@candidates) {
+            push @counts, scalar @candidates;
+            my $index = Random(scalar @candidates);
+            push @passphrase, $candidates[$index];
 
+        }
+        else {
+            my $len = $min_len;
+            $len .= "..$max_len" if $max_len > $min_len;
+            push @errors, "No words starting with '$initial' with $len letters\n";
+        }
+    }
+}
+else {
+    #
+    # The first program argument gives the number of words.
+    #
+    my @candidates = Words(undef, $min_len, $max_len);
+    my $s = scalar @candidates == 1 ? '' : 's';
+    @counts = (scalar @candidates) x $selector;
+    if (@candidates) {
+        for (1 .. $selector) {
+            my $index = Random(scalar @candidates);
+            push @passphrase, $candidates[$index];
+        }
     }
     else {
         my $len = $min_len;
         $len .= "..$max_len" if $max_len > $min_len;
-        push @errors, "No words starting with '$initial' with $len letters\n";
+        push @errors, "No words with $len letters\n";
     }
 }
 
@@ -83,22 +107,28 @@ if (@errors) {
 
 print "@passphrase\n";
 if ($Opt{verbose}) {
-    print "    ", join(' * ', @counts), "\n";
+    if ($use_initials) {
+        $stats .= "    " . join(' * ', @counts) . "\n";
+    }
+    else {
+        $stats .= "    " . $counts[0] . "**" . $selector . "\n";
+    }
     my $possibilities = Math::BigInt->new(1);
     foreach my $count (@counts) {
         $possibilities *= $count;
     }
     my $f_possibilities = Math::BigFloat->new($possibilities);
-    print "    ", Image($possibilities), " possibilities, equivalent to:\n";
+    $stats .= "    " . Image($possibilities) . " possibilities, equivalent to:\n";
     my $log_possibilities = log($f_possibilities);
-    printf "    %.2f random bits,\n" .
-           "    %.2f random lowercase letters,\n" .
-           "    %.2f random mixed-case alphanumerics,\n" .
-           "    %.2f random printable ASCII characters\n",
-           $log_possibilities / log(2),
-           $log_possibilities / log(26), # a-z
-           $log_possibilities / log(62), # a-zA-Z0-9
-           $log_possibilities / log(94); # !-~
+    $stats .= sprintf "    %.2f random bits\n" .
+                      "    %.2f random lowercase letters\n" .
+                      "    %.2f random mixed-case alphanumerics\n" .
+                      "    %.2f random printable ASCII characters\n",
+                      $log_possibilities / log(2),
+                      $log_possibilities / log(26), # a-z
+                      $log_possibilities / log(62), # a-zA-Z0-9
+                      $log_possibilities / log(94); # !-~
+    print $stats;
 }
 
 ########################################################################
@@ -148,7 +178,7 @@ sub Random {
 #
 sub Words {
     my($initial, $min_len, $max_len) = @_;
-    return grep { substr($_, 0, 1) eq $initial and
+    return grep { (defined $initial ? substr($_, 0, 1) eq $initial : 1) and
                   length $_ >= $min_len and
                   length $_ <= $max_len } @words;
 }
@@ -189,18 +219,24 @@ sub Image {
 # ----------------------------------------------------------------------
 
 sub Usage {
+    print @_ if @_;
     print <<"EOF";
-@{_}Usage: $Program_Name [options] initials min-len max-len
+Usage: $Program_Name [options] initials   min-len max-len
+       $Program_Name [options] word-count min-len max-len
     -help             Show this message and exit
     -verbose          Show statistics about the strength of the passphrase
     -dictionary file  Use specified word list
                       Default is $default_dictionary or \$PASSPHRASE_DICT
     -dev-random       Use /dev/random rather than /dev/urandom (slow)
     -debugging        Produce debugging output
+Option names may be abbreviated; for example, "-verbose" may be given as "-v".
 The passphrase consists of a sequence of words randomly selected
 from the specified word list file.
-"initials" is a string of lowercase letters
-"min-len" and "max-len" determine the lengths of the chosen words
+The first argument is either a string of lowercase letters
+(specifying the initial letters of the generated passphrase) or a
+decimal integer specifying the number of words.
+"min-len" and "max-len" are decimal integers determine the lengths
+of the chosen words
 EOF
     exit 1;
 } # Usage
