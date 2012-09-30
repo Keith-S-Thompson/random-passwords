@@ -11,7 +11,7 @@ a dictionary (`/usr/share/dict/words` by default), in the spirit of
 Both utilities obtain random data from `/dev/urandom` by
 default, but can be told to use `/dev/random`, which is much
 slower. They will not work on systems that do not have these
-device files. (I *might* consider falling back to Perl's built-in
+device files. (I could have had it falling back to Perl's built-in
 [rand()](http://perldoc.perl.org/functions/rand.html) function, but its
 documentation explicitly says that it's not cryptographically secure.)
 
@@ -45,7 +45,7 @@ answer](http://superuser.com/a/359601/92954) I posted on
         -debugging    Produce debugging output
 
 The program assumes an ASCII character set. For example, it assumes that 
-`'a'` .. `'z'` is the set of lower case letters.
+the set of lower case letters is `'a'` .. `'z'` 
 
 ---
 
@@ -53,7 +53,8 @@ The program assumes an ASCII character set. For example, it assumes that
 
 `gen-password -help` shows the following message:
 
-    Usage: gen-passphrase [options] initials min-len max-len
+    Usage: gen-passphrase [options] initials   min-len max-len
+           gen-passphrase [options] word-count min-len max-len
         -help             Show this message and exit
         -verbose          Show statistics about the strength of the passphrase
         -dictionary file  Use specified word list
@@ -61,15 +62,40 @@ The program assumes an ASCII character set. For example, it assumes that
         -dev-random       Use /dev/random rather than /dev/urandom (slow)
         -debugging        Produce debugging output
 
+Option names may be abbreviated; for example, "-verbose" may be given as "-v".
 The passphrase consists of a sequence of words randomly selected
 from the specified word list file.
-"initials" is a string of lowercase letters
-"min-len" and "max-len" determine the lengths of the chosen words
+The first argument is either a string of lowercase letters
+(specifying the initial letters of the generated passphrase) or a
+decimal integer specifying the number of words.
+"min-len" and "max-len" are decimal integers determine the lengths
+of the chosen words
+
+The passphrase consists of a sequence of words randomly selected
+from the specified word list file.  The three command-line arguments
+(following any options) are:
+
+1. Either:
+
+   * A string of ASCII lowercase letters, specifying the initials
+   of the generated passphrase; or
+   * A decimal integer specifying the
+   number of words (each of which will be selected randomly from the
+   entire word list);
+
+2. The minimum length of each word; and
+
+3. The maximum length of each word.
 
 This was partly inspired by [this XKCD cartoon](http://xkcd.com/936/),
 which suggests using long passphrases consisting of randomly selected
 English words.  The example in the cartoon was "correct horse battery
-staple" (of course you shouldn't use *that* specific passphrase.
+staple" (of course you shouldn't use *that* specific passphrase).
+
+With the first option, giving a string of lowecase letters as the
+first argument, you can specify a known word that will remind you
+of the passphrase; for example, "hello" might yield "hellion erosion
+leprosy legless outlook".
 
 Words are randomly selected from `/usr/share/dict/words`. Only lines
 consisting entirely of lowercase letters are considered. You can
@@ -111,11 +137,18 @@ and on CentOS 5.7, with a much larger dictionary:
 This indicates that the generated passphrase on Ubuntu is approximately
 as secure as `vsxdrnhli` (9 random lowercase letters) or `0Z4sLMl` (7
 random mixed-case alphanumeric characters). Using a larger dictionary
-gives better result, but can result in a passphrase that's more
+gives better results, but can result in a passphrase that's more
 difficult to remember (*scamles??*).
+
+Note that this shows the number of possibilities *given the criteria
+you chose*. With the Ubuntu example above ("chasing hearsay bygones
+smocked"), a hypothetical attacker has over 7 trillion possibilities to
+consider *if* he or she knows that your passphrase consists of 4 words
+starting with 'c', 'h', 'b', and 's', with 5 to 7 letters in each word.
+Without that knowledge, the attacker's problem space is much larger.
 
 ---
 
 If you find any bugs in these programs, *particularly* any security holes, please let me know.
 
--- Keith Thompson <[Keith.S.Thompson@gmail.com](mailto:Keith.S.Thompson@gmail.com)>, Wed 2012-09-26
+-- Keith Thompson <[Keith.S.Thompson@gmail.com](mailto:Keith.S.Thompson@gmail.com)>, Sat 2012-09-29
