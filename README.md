@@ -1,3 +1,9 @@
+Copyright (C) 2012 Keith Thompson
+
+`random-passwords` is released under GPL version 2 or later.  See the
+header comments in `gen-passphrase` and `gen-password` and the file
+`COPYING`.
+
 This is a small collection of utilities, written in Perl, for
 generating random passwords and passphrases.
 
