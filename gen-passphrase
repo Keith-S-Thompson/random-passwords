@@ -151,7 +151,7 @@ if ($Opt{verbose}) {
 #
 # Random($upper) returns a random number in the range 0 .. $upper-1
 #
-4ub Random {
+sub Random {
     my($upper) = @_;
     my $buf;
     my $short_bound = 2**24;
