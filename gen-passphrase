@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2012 Keith Thompson
+# Copyright (C) 2014 Keith Thompson
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -151,15 +151,15 @@ if ($Opt{verbose}) {
 #
 # Random($upper) returns a random number in the range 0 .. $upper-1
 #
-sub Random {
+4ub Random {
     my($upper) = @_;
     my $buf;
-    my $short_bound = 2**16;
+    my $short_bound = 2**24;
     my $value_bound = $short_bound - ($short_bound % $upper);
     my $value;
 
     # Values read from the device will be in the range 0 .. $short_bound-1
-    # (0..65535).  Repeat if necessary to get a value in the range
+    # (0..16777215).  Repeat if necessary to get a value in the range
     # 0..$value_bound-1, which is computed to avoid bias; the number of possible
     # values read is a multiple of $upper.
 
@@ -168,12 +168,12 @@ sub Random {
     open my $RANDOM, $device or die "${device}: $!\n";
 
     #
-    # Read 2 bytes from device.
+    # Read 3 bytes from device.
     # Discard high values to avoid bias.
     #
     do {
-        my $bytes_read = read $RANDOM, $buf, 2;
-        die "Failed to read from $device\n" if $bytes_read != 2;
+        my $bytes_read = read $RANDOM, $buf, 3;
+        die "Failed to read from $device\n" if $bytes_read != 3;
         $value = unpack 'S', $buf;
         Debugf("Read value 0x%04x\n", $value);
     } while $value >= $value_bound;
@@ -181,7 +181,7 @@ sub Random {
     close $RANDOM;
 
     my $result = $value % $upper;
-    Debugf("Random: 0x%04x %% %d --> %d\n",
+    Debugf("Random: 0x%06x %% %d --> %d\n",
            $value, $upper, $result);
     return $result;
 } # Random
