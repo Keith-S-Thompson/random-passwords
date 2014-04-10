@@ -1,5 +1,12 @@
 Copyright (C) 2012 Keith Thompson
 
+# UPDATE, Thu 2014-04-10 :
+
+A bug in `gen-passphrase` causes it to go into an infinite loop if the
+number of selected words (words from the dictionary file consisting
+entirely of lower case letters) exceeds 65536.  I'll have an update
+Real Soon Now.
+
 `random-passwords` is released under GPL version 2 or later.  See the
 header comments in `gen-passphrase` and `gen-password` and the file
 `COPYING`.
