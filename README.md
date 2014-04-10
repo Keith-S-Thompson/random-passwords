@@ -1,4 +1,4 @@
-Copyright (C) 2012 Keith Thompson
+Copyright (C) 2014 Keith Thompson
 
 ### UPDATE, Thu 2014-04-10 :
 
