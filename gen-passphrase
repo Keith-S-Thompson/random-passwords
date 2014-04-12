@@ -72,6 +72,10 @@ my @errors = ();
 
 my $stats = '';
 
+my $device = $Opt{'dev-random'} ? '/dev/random' : '/dev/urandom';
+Debug("Reading from $device\n");
+open my $RANDOM, '<', $device or die "${device}: $!\n";
+
 #
 # Generate the passphrase
 #
@@ -115,6 +119,8 @@ else {
         push @errors, "No words with $len letters\n";
     }
 }
+
+close $RANDOM or die "${device}: $!\n";
 
 if (@errors) {
     die @errors;
@@ -165,10 +171,6 @@ sub Random {
     # 0..$value_bound-1, which is computed to avoid bias; the number of possible
     # values read is a multiple of $upper.
 
-    my $device = '/dev/urandom';
-    Debug("Reading from $device\n");
-    open my $RANDOM, '<', $device or die "${device}: $!\n";
-
     #
     # Read 4 bytes from device.
     # Discard high values to avoid bias.
@@ -180,8 +182,6 @@ sub Random {
         $value = unpack 'L', $buf;
         Debugf("Read value 0x%08x\n", $value);
     } while $value >= $value_bound;
-
-    close $RANDOM;
 
     my $result = $value % $upper;
     Debugf("Random: 0x%08x %% %d --> %d\n",
