@@ -170,7 +170,7 @@ This indicates that the generated passphrase on Ubuntu is approximately
 as secure as `vsxdrnhli` (9 random lowercase letters) or `0Z4sLMl` (7
 random mixed-case alphanumeric characters). Using a larger dictionary
 gives better results, but can result in a passphrase that's more
-difficult to remember (*scamles??*).
+difficult to remember (*crumblet hordeola biogenies sarcinae??*).
 
 Note that this shows the number of possibilities *given the criteria
 you chose*. With the Ubuntu example above ("chasing hearsay bygones
