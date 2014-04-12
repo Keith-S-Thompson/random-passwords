@@ -10,6 +10,14 @@ robust patch later.  Please let me know if you run into any problems.
 My thanks to the person who pointed this out (who may or may not wish
 to be identified).
 
+### UPDATE, Sat 2014-04-12 :
+
+The fix for the bug was not entirely correct. It avoids the infinite
+loop, but it still limits the generated random numbers to the range
+0..65535.  This means that if you have a large dictionary file, only
+the first 65536 qualifying words will be considered.  I expect to
+have a fix for this bug before anyone has a chance to read this note.
+
 ---
 
 `random-passwords` is released under GPL version 2 or later.  See the
