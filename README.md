@@ -12,9 +12,11 @@ An update I made a few days ago did not correctly fix this problem.
 It avoided the infinite loop, but caused the program to ignore all
 but the first 65536 eligible words.  In some cases this could create
 a bias for words earlier in the alphabet.  This shouldn't have caused
-a problem if you specify the initials of the random words (unless
-you have a *huge* dictionary), but it could show up if you instead
-specify the number of words.
+a problem if you specify the initials of the random words (unless you
+have a *huge* dictionary), but it could show up if you instead specify
+the number of words.  It could also cause a generated passphrase to be
+(slightly) less secure than implied by statistics reported with the
+"-v" option.
 
 The problem is now corrected, and `gen-passphrase` should in principle
 handle up to 2<sup>32</sup> words (though it would probably run out
