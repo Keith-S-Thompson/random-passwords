@@ -1,24 +1,29 @@
 Copyright (C) 2014 Keith Thompson
 
-### UPDATE, Thu 2014-04-10 :
-
-A bug in `gen-passphrase` caused it to go into an infinite loop if the
-number of selected words (words from the dictionary file consisting
-entirely of lower case letters) exceeds 65536.  I've patched the
-command to increase the upper bound to 16777216.  I'll work on a more
-robust patch later.  Please let me know if you run into any problems.
-My thanks to the person who pointed this out (who may or may not wish
-to be identified).
-
 ### UPDATE, Sat 2014-04-12 :
 
-The fix for the bug was not entirely correct. It avoids the infinite
-loop, but it still limits the generated random numbers to the range
-0..65535.  This means that if you have a large dictionary file, only
-the first 65536 qualifying words will be considered, which in some
-cases will create a bias for words that appear early in the alphabet.
-I expect to have a fix for this bug before anyone has a chance to
-read this note.
+A bug was recently discovered in the `gen-passphrase` command.
+This bug did not affect the security of the generated passphrases,
+but it did cause the command to go into an infinite loop if the
+provided dictionary is very long (specifically, if there are more
+than 65536 candidate words to choose from).
+
+An update I made a few days ago did not correctly fix this problem.
+It avoided the infinite loop, but caused the program to ignore all
+but the first 65536 eligible words.  In some cases this could create
+a bias for words earlier in the alphabet.  This shouldn't have caused
+a problem if you specify the initials of the random words (unless
+you have a *huge* dictionary), but it could show up if you instead
+specify the number of words.
+
+The problem is now corrected, and `gen-passphrase` should in principle
+handle up to 2<sup>32</sup> words (though it would probably run out
+of memory before that).
+
+My thanks to Jimmy Wales (yes, *that* [Jimmy
+Wales](http://en.wikipedia.org/wiki/Jimmy_wales)) for finding and
+reporting the original bug, and for letting me know that somebody
+out there is actually using this.
 
 ---
 
@@ -179,4 +184,4 @@ Without that knowledge, the attacker's problem space is much larger.
 
 If you find any bugs in these programs, *particularly* any security holes, please let me know.
 
--- Keith Thompson <[Keith.S.Thompson@gmail.com](mailto:Keith.S.Thompson@gmail.com)>, Sat 2012-09-29
+-- Keith Thompson <[Keith.S.Thompson@gmail.com](mailto:Keith.S.Thompson@gmail.com)>, Sat 2014-04-12
