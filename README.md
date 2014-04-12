@@ -158,19 +158,19 @@ generate "correct horse battery staple", executed on Ubuntu 12.04:
 and on CentOS 5.7, with a much larger dictionary:
 
     $ gen-passphrase -v chbs 5 7
-    ciders honour blowout scamles
+    cepous halpace bundist subfix
         7117 * 2895 * 5952 * 9233
         1.1322e15 possibilities, equivalent to:
-        50.01 random bits,
-        10.64 random lowercase letters,
-        8.40 random mixed-case alphanumerics,
+        50.01 random bits
+        10.64 random lowercase letters
+        8.40 random mixed-case alphanumerics
         7.63 random printable ASCII characters
 
 This indicates that the generated passphrase on Ubuntu is approximately
 as secure as `vsxdrnhli` (9 random lowercase letters) or `0Z4sLMl` (7
 random mixed-case alphanumeric characters). Using a larger dictionary
 gives better results, but can result in a passphrase that's more
-difficult to remember (*crumblet hordeola biogenies sarcinae??*).
+difficult to remember (*"cepous halpace bundist subfix"? Really?*).
 
 Note that this shows the number of possibilities *given the criteria
 you chose*. With the Ubuntu example above ("chasing hearsay bygones
