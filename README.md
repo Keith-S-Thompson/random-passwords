@@ -94,15 +94,14 @@ the set of lower case letters is `'a'` .. `'z'`
                           Default is /usr/share/dict/words or $PASSPHRASE_DICT
         -dev-random       Use /dev/random rather than /dev/urandom (slow)
         -debugging        Produce debugging output
-
-Option names may be abbreviated; for example, "-verbose" may be given as "-v".
-The passphrase consists of a sequence of words randomly selected
-from the specified word list file.
-The first argument is either a string of lowercase letters
-(specifying the initial letters of the generated passphrase) or a
-decimal integer specifying the number of words.
-"min-len" and "max-len" are decimal integers determine the lengths
-of the chosen words
+    Option names may be abbreviated; for example, "-verbose" may be given as "-v".
+    The passphrase consists of a sequence of words randomly selected
+    from the specified word list file.
+    The first argument is either a string of lowercase letters
+    (specifying the initial letters of the generated passphrase) or a
+    decimal integer specifying the number of words.
+    "min-len" and "max-len" are decimal integers determining the lengths
+    of the chosen words
 
 The passphrase consists of a sequence of words randomly selected
 from the specified word list file.  The three command-line arguments
