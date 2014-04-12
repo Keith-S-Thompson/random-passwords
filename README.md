@@ -15,8 +15,10 @@ to be identified).
 The fix for the bug was not entirely correct. It avoids the infinite
 loop, but it still limits the generated random numbers to the range
 0..65535.  This means that if you have a large dictionary file, only
-the first 65536 qualifying words will be considered.  I expect to
-have a fix for this bug before anyone has a chance to read this note.
+the first 65536 qualifying words will be considered, which in some
+cases will create a bias for words that appear early in the alphabet.
+I expect to have a fix for this bug before anyone has a chance to
+read this note.
 
 ---
 
