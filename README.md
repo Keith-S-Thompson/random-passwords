@@ -1,5 +1,15 @@
 Copyright (C) 2014 Keith Thompson
 
+### UPDATE, Wed 2014-08-06 :
+
+A very minor bug in `gen-password` caused a warning message:
+
+    defined(@array) is deprecated at /home/kst/bin/gen-password line 151.
+            (Maybe you should just omit the defined()?)
+
+to appear when using recent versions of Perl.  This bug had no effect
+other than printing the warning message.  I've corrected it.
+
 ### UPDATE, Sat 2014-04-12 :
 
 A bug was recently discovered in the `gen-passphrase` command.
