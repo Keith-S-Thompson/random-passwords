@@ -7,7 +7,8 @@ A very minor bug in `gen-password` caused a warning message:
     defined(@array) is deprecated at /home/kst/bin/gen-password line 151.
             (Maybe you should just omit the defined()?)
 
-to appear when using recent versions of Perl.  This bug had no effect
+to appear when using recent versions of Perl.  (The warning appears
+with Perl 5.16.3, but not with Perl 5.14.4.)  This bug had no effect
 other than printing the warning message.  I've corrected it.
 
 ### UPDATE, Sat 2014-04-12 :
