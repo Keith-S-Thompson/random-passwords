@@ -97,7 +97,7 @@ the set of lower case letters is `'a'` .. `'z'`
 
 # `gen-passphrase`
 
-`gen-password -help` shows the following message:
+`gen-passphrase -help` shows the following message:
 
     Usage: gen-passphrase [options] initials   min-len max-len
            gen-passphrase [options] word-count min-len max-len
@@ -124,9 +124,8 @@ from the specified word list file.  The three command-line arguments
 
    * A string of ASCII lowercase letters, specifying the initials
    of the generated passphrase; or
-   * A decimal integer specifying the
-   number of words (each of which will be selected randomly from the
-   entire word list);
+   * A decimal integer specifying the number of words (each of which
+   will be selected randomly from the entire word list);
 
 2. The minimum length of each word; and
 
@@ -137,17 +136,18 @@ which suggests using long passphrases consisting of randomly selected
 English words.  The example in the cartoon was "correct horse battery
 staple" (of course you shouldn't use *that* specific passphrase).
 
-With the first option, giving a string of lowecase letters as the
+With the first option, giving a string of lowercase letters as the
 first argument, you can specify a known word that will remind you
 of the passphrase; for example, "hello" might yield "hellion erosion
 leprosy legless outlook".
 
-Words are randomly selected from `/usr/share/dict/words`. Only lines
-consisting entirely of lowercase letters are considered. You can
-specify a different dictionary file by using the `-dictionary` option
-or by setting the `$PASSPHRASE_DICT` environment variable. (For
-example, Cygwin has no `/usr/share/dict/words`, so set
-`$PASSPHRASE_DICT` to point to a copy from my Ubuntu system).
+Words are randomly selected from the word list file, usually
+`/usr/share/dict/words`. Only lines consisting entirely of
+lowercase letters are considered. You can specify a different
+dictionary file by using the `-dictionary` option or by setting the
+`$PASSPHRASE_DICT` environment variable. (For example, Cygwin has no
+`/usr/share/dict/words`, so I set `$PASSPHRASE_DICT` to point to a copy
+from my Ubuntu system).
 
 With the `-verbose` option, `gen-passphrase` shows some statistics
 about the estimated strength of the generated passphrase, based on the
@@ -196,4 +196,4 @@ Without that knowledge, the attacker's problem space is much larger.
 
 If you find any bugs in these programs, *particularly* any security holes, please let me know.
 
--- Keith Thompson <[Keith.S.Thompson@gmail.com](mailto:Keith.S.Thompson@gmail.com)>, Sat 2014-04-12
+-- Keith Thompson <[Keith.S.Thompson@gmail.com](mailto:Keith.S.Thompson@gmail.com)>
