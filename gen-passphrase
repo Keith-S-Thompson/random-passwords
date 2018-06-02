@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2014 Keith Thompson
+# Copyright (C) 2018 Keith Thompson
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -23,29 +23,29 @@ use Getopt::Long ();
 use Math::BigInt ();
 use Math::BigFloat ();
 
-my $Program_Name = (File::Spec->splitpath($0))[2];
+my $program_name = (File::Spec->splitpath($0))[2];
 
 my $default_dictionary = '/usr/share/dict/words';
 
-my %Opt = ( dictionary => defined $ENV{PASSPHRASE_DICT}
+my %opt = ( dictionary => defined $ENV{PASSPHRASE_DICT}
                                 ? $ENV{PASSPHRASE_DICT}
                                 : $default_dictionary );
-my @Opts = ( \%Opt, qw( help!
+my @opts = ( \%opt, qw( help!
                         verbose!
                         dictionary=s
                         dev-random!
                         debugging! ) );
 
-Getopt::Long::GetOptions @Opts or Usage();
-Usage() if $Opt{help};
+Getopt::Long::GetOptions @opts or usage();
+usage() if $opt{help};
 
-Usage() unless scalar @ARGV == 3 and
+usage() unless scalar @ARGV == 3 and
                ($ARGV[0] =~ /^[a-z]+$/ or $ARGV[0] =~ /^\d+$/) and
                $ARGV[1] =~ /^\d+$/ and
                $ARGV[2] =~ /^\d+$/;
 
 my($selector, $min_len, $max_len) = @ARGV;
-Usage("max_len must be >= min_len\n") if $max_len < $min_len;
+usage("max_len must be >= min_len\n") if $max_len < $min_len;
 
 my $use_initials = ($selector =~ /^[a-z]+$/);
 
@@ -54,14 +54,14 @@ my @words = ();
 #
 # Slurp all lowercase words from the dictionary file into an array.
 #
-open my $DICT, '<', $Opt{dictionary} or die "$Opt{dictionary}: $!\n";
+open my $DICT, '<', $opt{dictionary} or die "$opt{dictionary}: $!\n";
 while (<$DICT>) {
     chomp;
     s/\r$//;
     next if not /^[a-z]+$/;
     push @words, $_;
 }
-close $DICT;
+close $DICT or die "$opt{dictionary}: $!\n";
 
 # print scalar @words, " words\n";
 
@@ -72,7 +72,7 @@ my @errors = ();
 
 my $stats = '';
 
-my $device = $Opt{'dev-random'} ? '/dev/random' : '/dev/urandom';
+my $device = $opt{'dev-random'} ? '/dev/random' : '/dev/urandom';
 Debug("Reading from $device\n");
 open my $RANDOM, '<', $device or die "${device}: $!\n";
 
@@ -85,11 +85,11 @@ if ($use_initials) {
     # passphrase.
     #
     foreach my $initial (split //, $selector) {
-        my @candidates = Words($initial, $min_len, $max_len);
+        my @candidates = words($initial, $min_len, $max_len);
         my $s = scalar @candidates == 1 ? '' : 's';
         if (@candidates) {
             push @counts, scalar @candidates;
-            my $index = Random(scalar @candidates);
+            my $index = random(scalar @candidates);
             push @passphrase, $candidates[$index];
 
         }
@@ -101,15 +101,15 @@ if ($use_initials) {
     }
 }
 else {
-    #
+    
     # The first program argument gives the number of words.
     #
-    my @candidates = Words(undef, $min_len, $max_len);
+    my @candidates = words(undef, $min_len, $max_len);
     my $s = scalar @candidates == 1 ? '' : 's';
     @counts = (scalar @candidates) x $selector;
     if (@candidates) {
         for (1 .. $selector) {
-            my $index = Random(scalar @candidates);
+            my $index = random(scalar @candidates);
             push @passphrase, $candidates[$index];
         }
     }
@@ -127,7 +127,7 @@ if (@errors) {
 }
 
 print "@passphrase\n";
-if ($Opt{verbose}) {
+if ($opt{verbose}) {
     if ($use_initials) {
         $stats .= "    " . join(' * ', @counts) . "\n";
     }
@@ -139,7 +139,7 @@ if ($Opt{verbose}) {
         $possibilities *= $count;
     }
     my $f_possibilities = Math::BigFloat->new($possibilities);
-    $stats .= "    " . Image($possibilities) . " possibilities, equivalent to:\n";
+    $stats .= "    " . image($possibilities) . " possibilities, equivalent to:\n";
     my $log_possibilities = log($f_possibilities);
     $stats .= sprintf "    %.2f random bits\n" .
                       "    %.2f random lowercase letters\n" .
@@ -155,9 +155,9 @@ if ($Opt{verbose}) {
 ########################################################################
 
 #
-# Random($upper) returns a random number in the range 0 .. $upper-1
+# random($upper) returns a random number in the range 0 .. $upper-1
 #
-sub Random {
+sub random {
     my($upper) = @_;
     my $long_bound = 1<<32;
     if ($upper > $long_bound) {
@@ -180,11 +180,11 @@ sub Random {
         my $bytes_read = read $RANDOM, $buf, 4;
         die "Failed to read from $device\n" if $bytes_read != 4;
         $value = unpack 'L', $buf;
-        Debugf("Read value 0x%08x\n", $value);
+        debugf("Read value 0x%08x\n", $value);
     } while $value >= $value_bound;
 
     my $result = $value % $upper;
-    Debugf("Random: 0x%08x %% %d --> %d\n",
+    debugf("random: 0x%08x %% %d --> %d\n",
            $value, $upper, $result);
     return $result;
 }
@@ -194,7 +194,7 @@ sub Random {
 #
 # Returns a list of words satisfying the specified criteria
 #
-sub Words {
+sub words {
     my($initial, $min_len, $max_len) = @_;
     return grep { (defined $initial ? substr($_, 0, 1) eq $initial : 1) and
                   length $_ >= $min_len and
@@ -206,7 +206,7 @@ sub Words {
 #
 # Insert commas into a string, e.g., "1234567" --> "1,234,567"
 #
-sub Comma {
+sub comma {
     my($num) = sprintf "%.0f", $_[0];
     $num = reverse $num;
     $num =~ s/.../$&,/g;
@@ -217,13 +217,13 @@ sub Comma {
 
 # ----------------------------------------------------------------------
 
-sub Image {
+sub image {
     my($num) = @_;
-    if ($num < 10000) {
+    if ($num < 10_000) {
         return $num;
     }
     elsif ($num < 1e9) {
-        return Comma $num;
+        return comma $num;
     }
     else {
         $num = Math::BigFloat->new($num);
@@ -236,11 +236,11 @@ sub Image {
 
 # ----------------------------------------------------------------------
 
-sub Usage {
+sub usage {
     print @_ if @_;
     print <<"EOF";
-Usage: $Program_Name [options] initials   min-len max-len
-       $Program_Name [options] word-count min-len max-len
+usage: $program_name [options] initials   min-len max-len
+       $program_name [options] word-count min-len max-len
     -help             Show this message and exit
     -verbose          Show statistics about the strength of the passphrase
     -dictionary file  Use specified word list
@@ -257,16 +257,16 @@ decimal integer specifying the number of words.
 of the chosen words
 EOF
     exit 1;
-} # Usage
+} # usage
 
 # ----------------------------------------------------------------------
 
-sub Debug {
-    print @_ if $Opt{debugging};
-} # Debug
+sub debug {
+    print @_ if $opt{debugging};
+} # debug
 
 # ----------------------------------------------------------------------
 
-sub Debugf {
-    printf @_ if $Opt{debugging};
-} # Debugf
+sub debugf {
+    printf @_ if $opt{debugging};
+} # debugf
