@@ -1,4 +1,15 @@
-Copyright (C) 2014 Keith Thompson
+Copyright (C) 2018 Keith Thompson
+
+### UPDATE, Sat 2018-06-02 :
+
+I've added options to `gen-password` to require specified single
+characters.  For example, if a site requires at least one decimal
+digit and one punctuation character, you can use:
+
+    gen-password -len 12 -lower -1decimal -1punctuation
+
+Some sites restrict which punctuation characters can be used.
+Use the `-1charset` option for that.
 
 ### UPDATE, Wed 2014-08-06 :
 
@@ -72,7 +83,7 @@ answer](http://superuser.com/a/359601/92954) I posted on
 
 `gen-password -help` shows the following message:
 
-    Usage: gen-password [options]
+    usage: gen-password [options]
         -help         Display this message and exit
         -length N     Length of generated password, default is 12
         -charset ...  Character set, default is "a-z0-9"
@@ -86,6 +97,11 @@ answer](http://superuser.com/a/359601/92954) I posted on
         -alphanumeric Equivalent to "-charset A-Za-z0-9"
         -printable    Equivalent to "-charset !-~"
                       (ASCII non-blank printable characters)
+        -1lower       Include (at least) 1 lower case letter
+        -1upper       Include (at least) 1 upper case letter
+        -1decimal     Include (at least) 1 decimal digit
+        -1punctuation Include (at least) 1 punctuation character
+        -1charset ... Include (at least) 1 character from the specified set
         -split N      Split with a blank every N characters
         -dev-random   Use /dev/random rather than /dev/urandom (slow)
         -debugging    Produce debugging output
