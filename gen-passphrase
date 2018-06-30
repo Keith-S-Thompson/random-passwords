@@ -73,7 +73,7 @@ my @errors = ();
 my $stats = '';
 
 my $device = $opt{'dev-random'} ? '/dev/random' : '/dev/urandom';
-Debug("Reading from $device\n");
+debug("Reading from $device\n");
 open my $RANDOM, '<', $device or die "${device}: $!\n";
 
 #
