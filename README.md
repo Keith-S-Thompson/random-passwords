@@ -83,12 +83,13 @@ answer](http://superuser.com/a/359601/92954) I posted on
 
 `gen-password -help` shows the following message:
 
-    usage: gen-password [options]
-        -help         Display this message and exit
+    Usage: gen-password [options]
+        -help, -h     Display this message and exit
         -length N     Length of generated password, default is 12
         -charset ...  Character set, default is "a-z0-9"
                       The argument is a single word.
         -decimal      Equivalent to "-charset 0-9"
+        -digit        Same as -decimal
         -hexadecimal  Equivalent to "-charset 0-9a-f"
         -Hexadecimal  Equivalent to "-charset 0-9A-F"
         -octal        Equivalent to "-charset 0-7"
@@ -100,10 +101,12 @@ answer](http://superuser.com/a/359601/92954) I posted on
         -1lower       Include (at least) 1 lower case letter
         -1upper       Include (at least) 1 upper case letter
         -1decimal     Include (at least) 1 decimal digit
+        -1digit       Same as -1decimal
         -1punctuation Include (at least) 1 punctuation character
         -1charset ... Include (at least) 1 character from the specified set
                       This option may be given multiple times
                       (The other -1... options may only be given once)
+                      Use "-1charset 0-9 -1charset 0-9" for 2 decimal digits
         -split N      Split with a blank every N characters
         -dev-random   Use /dev/random rather than /dev/urandom (slow)
         -debugging    Produce debugging output
