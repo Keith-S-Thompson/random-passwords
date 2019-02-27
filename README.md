@@ -1,4 +1,19 @@
-Copyright (C) 2018 Keith Thompson
+Copyright (C) 2019 Keith Thompson
+
+### UPDATE, Tue 2019-02-26 :
+
+https://github.com/Keith-S-Thompson/random-passwords/issues/3
+
+I've just discovered a minor formatting bug.  The "`-split N`" option
+(split the password with a blank every `N` characters) does not 
+interact properly with the `-1digit`, `-1upper`, et al options.
+The `-1*` options replace characters at random locations.  Currently,
+this is done *after* splitting.  So, for example:
+
+    $ gen-password -len 12 -lower -1upper -split 1
+    v r gGn y a o r m b p g
+
+Workaround: Don't use these options together.
 
 ### UPDATE, Mon 2018-06-04 :
 
