@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2018 Keith Thompson
+# Copyright (C) 2019 Keith Thompson
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -27,9 +27,7 @@ my $program_name = (File::Spec->splitpath($0))[2];
 
 my $default_dictionary = '/usr/share/dict/words';
 
-my %opt = ( dictionary => defined $ENV{PASSPHRASE_DICT}
-                                ? $ENV{PASSPHRASE_DICT}
-                                : $default_dictionary );
+my %opt = ( dictionary => $ENV{PASSPHRASE_DICT} // $default_dictionary );
 my @opts = ( \%opt, qw( help!
                         verbose!
                         dictionary=s
@@ -74,7 +72,7 @@ my $stats = '';
 
 my $device = $opt{'dev-random'} ? '/dev/random' : '/dev/urandom';
 debug("Reading from $device\n");
-open my $RANDOM, '<', $device or die "${device}: $!\n";
+open my $DEVICE, '<', $device or die "${device}: $!\n";
 
 #
 # Generate the passphrase
@@ -89,7 +87,7 @@ if ($use_initials) {
         my $s = scalar @candidates == 1 ? '' : 's';
         if (@candidates) {
             push @counts, scalar @candidates;
-            my $index = random(scalar @candidates);
+            my $index = random(scalar @candidates, $DEVICE);
             push @passphrase, $candidates[$index];
 
         }
@@ -109,7 +107,7 @@ else {
     @counts = (scalar @candidates) x $selector;
     if (@candidates) {
         for (1 .. $selector) {
-            my $index = random(scalar @candidates);
+            my $index = random(scalar @candidates, $DEVICE);
             push @passphrase, $candidates[$index];
         }
     }
@@ -120,7 +118,7 @@ else {
     }
 }
 
-close $RANDOM or die "${device}: $!\n";
+close $DEVICE or die "${device}: $!\n";
 
 if (@errors) {
     die @errors;
@@ -155,39 +153,37 @@ if ($opt{verbose}) {
 ########################################################################
 
 #
-# random($upper) returns a random number in the range 0 .. $upper-1
+# random($upper, $DEVICE) returns a random number in the range 0 .. $upper-1
+# $DEVICE is a file handle already opened to /dev/urandom or /dev/random
 #
 sub random {
-    my($upper) = @_;
-    my $long_bound = 1<<32;
-    if ($upper > $long_bound) {
-        die "Internal error, $upper exceeds $long_bound\n";
-    }
-    my $value_bound = $long_bound - ($long_bound % $upper);
+    my($upper, $DEVICE) = @_;
+    my $buf;
+    my $short_bound = 2**16;
+    my $value_bound = $short_bound - ($short_bound % $upper);
     my $value;
 
-    # Values read from the device will be in the range 0 .. $long_bound-1
-    # (0..4294967295).  Repeat if necessary to get a value in the range
+    # Values read from the device will be in the range 0 .. $short_bound-1
+    # (0..65535).  Repeat if necessary to get a value in the range
     # 0..$value_bound-1, which is computed to avoid bias; the number of possible
     # values read is a multiple of $upper.
 
     #
-    # Read 4 bytes from device.
+    # Read 2 bytes from device.
     # Discard high values to avoid bias.
     #
     do {
-        my $buf;
-        my $bytes_read = read $RANDOM, $buf, 4;
-        die "Failed to read from $device\n" if $bytes_read != 4;
-        $value = unpack 'L', $buf;
-        debugf("Read value 0x%08x\n", $value);
+        my $bytes_read = read $DEVICE, $buf, 2;
+        die "Failed to read from $device\n" if $bytes_read != 2;
+        $value = unpack 'S', $buf;
+        debugf("Read value 0x%04x\n", $value);
     } while $value >= $value_bound;
 
     my $result = $value % $upper;
-    debugf("random: 0x%08x %% %d --> %d\n",
+    debugf("random: 0x%04x %% %d --> %d\n",
            $value, $upper, $result);
     return $result;
-}
+} # random
 
 # ----------------------------------------------------------------------
 
