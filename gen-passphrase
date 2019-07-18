@@ -26,9 +26,13 @@ use Math::BigFloat ();
 my $program_name = (File::Spec->splitpath($0))[2];
 
 my $default_dictionary = '/usr/share/dict/words';
-my %opt = (
-    dictionary => $ENV{PASSPHRASE_DICT} // $default_dictionary
-);
+my %opt = ();
+if (defined $ENV{PASSPHRASE_DICT}) {
+    $opt{dictionary} = $ENV{PASSPHRASE_DICT};
+}
+else {
+    $opt{dictionary} = $default_dictionary;
+}
 my @opts = (
     \%opt,
     qw( help!
