@@ -1,6 +1,6 @@
-MANPAGES = gen-passphrase.1 gen-password.1
-PDF      = gen-passphrase.pdf gen-password.pdf 
-MARKDOWN = gen-passphrase.md gen-password.md
+MANPAGES = doc/gen-passphrase.1 doc/gen-password.1
+PDF      = doc/gen-passphrase.pdf doc/gen-password.pdf 
+MARKDOWN = doc/gen-passphrase.md doc/gen-password.md
 
 default:        manpages
 
@@ -12,22 +12,22 @@ pdf:            $(PDF)
 
 markdown:       $(MARKDOWN)
 
-gen-passphrase.1:	gen-passphrase
+doc/gen-passphrase.1:	gen-passphrase
 	pod2man $< > $@
 
-gen-password.1:	gen-password
+doc/gen-password.1:	gen-password
 	pod2man $< > $@
 
-gen-passphrase.pdf:	gen-passphrase.1
+doc/gen-passphrase.pdf:	doc/gen-passphrase.1
 	groff -man -Tps $< | ps2pdf - $@
 
-gen-password.pdf:	gen-password.1
+doc/gen-password.pdf:	doc/gen-password.1
 	groff -man -Tps $< | ps2pdf - $@
 
-gen-password.md:        gen-password
+doc/gen-password.md:        gen-password
 	pod2markdown $< > $@
 
-gen-passphrase.md:        gen-passphrase
+doc/gen-passphrase.md:        gen-passphrase
 	pod2markdown $< > $@
 
 clean:
