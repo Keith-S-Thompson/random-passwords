@@ -96,7 +96,7 @@ answer](http://superuser.com/a/359601/92954) I posted on
 
 # `gen-password`
 
-`gen-password -help` shows the following message:
+This is the output of `gen-password -help` from a previous release (to be updated, but the options haven't changed):
 
     Usage: gen-password [options]
         -help, -h     Display this message and exit
@@ -133,7 +133,7 @@ the set of lower case letters is `'a'` .. `'z'`
 
 # `gen-passphrase`
 
-`gen-passphrase -help` shows the following message:
+This is the output of `gen-passphrase -help` from a previous release (to be updated, but the options haven't changed):
 
     Usage: gen-passphrase [options] initials   min-len max-len
            gen-passphrase [options] word-count min-len max-len

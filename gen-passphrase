@@ -18,12 +18,10 @@
 use strict;
 use warnings;
 
-use File::Spec ();
 use Getopt::Long ();
+use Pod::Usage ();
 use Math::BigInt ();
 use Math::BigFloat ();
-
-my $program_name = (File::Spec->splitpath($0))[2];
 
 my $default_dictionary = '/usr/share/dict/words';
 my %opt = ();
@@ -33,22 +31,31 @@ if (defined $ENV{PASSPHRASE_DICT}) {
 else {
     $opt{dictionary} = $default_dictionary;
 }
-my @opts = (
+Getopt::Long::GetOptions(
     \%opt,
-    qw( help!
+    qw( help|hel|he|h!
+        help1!
+        help2!
+        man!
+
         verbose!
         dictionary=s
         dev-random!
         debugging!
     )
-);
-Getopt::Long::GetOptions @opts or usage();
-usage() if $opt{help};
+) or Pod::Usage::pod2usage(-verbose => 0, -exitvalue => 2);
+Pod::Usage::pod2usage(-verbose => 2, -exitvalue => 0) if $opt{man};
+Pod::Usage::pod2usage(-verbose => 2, -exitvalue => 0, -perldocopt, '-T -t') if $opt{help2};
+Pod::Usage::pod2usage(-verbose => 1, -exitvalue => 0) if $opt{help1};
+Pod::Usage::pod2usage(-verbose => 0, -exitvalue => 0) if $opt{help};
 
-usage() unless scalar @ARGV == 3 and
-               ($ARGV[0] =~ /^[a-z]+$/ or $ARGV[0] =~ /^\d+$/) and
-               $ARGV[1] =~ /^\d+$/ and
-               $ARGV[2] =~ /^\d+$/;
+if (not (scalar @ARGV == 3 and
+         ($ARGV[0] =~ /^[a-z]+$/ or $ARGV[0] =~ /^\d+$/) and
+         $ARGV[1] =~ /^\d+$/ and
+         $ARGV[2] =~ /^\d+$/))
+{
+    Pod::Usage::pod2usage(-verbose => 0, -exitvalue => 0);
+}
 
 my($selector, $min_len, $max_len) = @ARGV;
 usage("max_len must be >= min_len\n") if $max_len < $min_len;
@@ -68,8 +75,6 @@ while (<$DICT>) {
     push @words, $_;
 }
 close $DICT or die "$opt{dictionary}: $!\n";
-
-# print scalar @words, " words\n";
 
 my @passphrase = ();
 
@@ -107,7 +112,7 @@ if ($use_initials) {
     }
 }
 else {
-    
+    #
     # The first program argument gives the number of words.
     #
     my @candidates = words(undef, $min_len, $max_len);
@@ -158,7 +163,7 @@ if ($opt{verbose}) {
     print $stats;
 }
 
-########################################################################
+# ----------------------------------------------------------------------
 
 #
 # random($upper, $DEVICE) returns a random number in the range 0 .. $upper-1
@@ -191,7 +196,7 @@ sub random {
     debugf("random: 0x%04x %% %d --> %d\n",
            $value, $upper, $result);
     return $result;
-} # random
+}
 
 #
 # Returns a list of words satisfying the specified criteria
@@ -233,38 +238,122 @@ sub image {
     }
 }
 
-sub usage {
-    my(@message) = @_;
-    print @message if @message;
-    print <<"EOF";
-usage: $program_name [options] initials   min-len max-len
-       $program_name [options] word-count min-len max-len
-    -help             Show this message and exit
-    -verbose          Show statistics about the strength of the passphrase
-    -dictionary file  Use specified word list
-                      Default is $default_dictionary or \$PASSPHRASE_DICT
-    -dev-random       Use /dev/random rather than /dev/urandom (slow)
-    -debugging        Produce debugging output
-Option names may be abbreviated; for example, "-verbose" may be given as "-v".
-The passphrase consists of a sequence of words randomly selected
-from the specified word list file.
-The first argument is either a string of lowercase letters
-(specifying the initial letters of the generated passphrase) or a
-decimal integer specifying the number of words.
-"min-len" and "max-len" are decimal integers determining the lengths
-of the chosen words
-EOF
-    exit 1;
-} # usage
-
 sub debug {
     my(@message) = @_;
     print @message if $opt{debugging};
     return;
-} # debug
+}
 
 sub debugf {
     my(@message) = @_;
     printf @message if $opt{debugging};
     return;
-} # debugf
+}
+
+__END__
+
+=head1 NAME
+
+gen-passphrase - Generate random passphrases
+
+=head1 SYNOPSIS
+
+gen-passphrase [options] initials|word-count min-len max-len
+
+ Options:
+    -help       Show short usage message
+    -help1      Show medium usage message
+    -help2      Show long usage message
+    -man        Show long usage message (invokes pager)
+
+    -verbose          Show statistics about the strength of the passphrase
+    -dictionary file  Use specified word list
+                      Default is /usr/share/dict/words or $PASSPHRASE_DICT
+    -dev-random       Use /dev/random rather than /dev/urandom (slow)
+    -debugging        Produce debugging output (developer option)
+
+=head1 DESCRIPTION
+
+B<gen-passphrase> generates random passphrases.
+
+It is part of the B<random-passwords> package, available at
+
+L<https://github.com/Keith-S-Thompson/random-passwords>
+
+More documentation is available there.
+
+B<gen-passphrase> was partly inspired by this XKCD cartoon: L<http://xkcd.com/936/>,
+which suggests using long passphrases consisting of randomly selected
+English words.  The example in the cartoon was "correct horse battery
+staple" (of course you shouldn't use *that* specific passphrase).
+
+The passphrase consists of a sequence of words randomly selected
+from the specified word list file.  The three command-line arguments
+(following any options) are:
+
+1. B<Either> a string of ASCII lowercase letters B<or> a decimal integer
+  specifying the number of words;
+
+2. The minimum length of each word; and
+
+3. The maximum length of each word.
+
+=head1 OPTIONS
+
+All options may be abbreviated uniquely.  B<-help> may be abbreviated as B<-h>.
+
+=over 4
+
+=item B<-help>
+
+Show short usage message
+
+=item B<-help1>
+
+Show medium usage message
+
+=item B<-help2>
+
+Show long usage message
+
+=item B<-man>
+
+Show long usage message using B<perldoc>, invokes pager
+
+=item B<-verbose>
+
+Show statistics about the strength of the passphrase
+
+=item B<-dictionary I<file>>
+
+Use specified word list  
+
+Default is /usr/share/dict/words or $PASSPHRASE_DICT
+
+=item B<-dev-random>
+
+Use /dev/random rather than /dev/urandom
+
+This can be much slower and is probably unnecessary.
+
+=item B<-debugging>
+
+Produce debugging output (developer option)
+
+=back
+
+=head1 SEE ALSO
+
+B<gen-passphrase>, also part of the B<random-passwords> package.
+
+L<https://github.com/Keith-S-Thompson/random-passwords>.
+
+=head1 AUTHOR
+
+Keith Thompson <Keith.S.Thompson@gmail.com>
+
+=head1 LICENSE AND COPYRIGHT
+
+B<random-passphrase> is released under GPL version 2 or later.
+
+=cut
