@@ -12,6 +12,7 @@ gen-passphrase \[options\] initials|word-count min-len max-len
        -help2      Show long usage message
        -man        Show long usage message (invokes pager)
 
+       -[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
        -verbose          Show statistics about the strength of the passphrase
        -dictionary file  Use specified word list
                          Default is /usr/share/dict/words or $PASSPHRASE_DICT
@@ -63,6 +64,15 @@ All options may be abbreviated uniquely.  **-help** may be abbreviated as **-h**
 - **-man**
 
     Show long usage message using **perldoc**, invokes pager
+
+- **-\[no\]suffix**
+
+    **-suffix**, the default, allows words ending in s, ed, and ing
+    (which are typically forms of other words).
+
+    **-nosuffix** excludes such words.  This typically reduces the number of
+    available words by about half.  If you use this option, use **-verbose**
+    to see the effects, and consider using more and/or longer words.
 
 - **-verbose**
 

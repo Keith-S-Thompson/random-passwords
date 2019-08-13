@@ -24,7 +24,7 @@ use Math::BigInt ();
 use Math::BigFloat ();
 
 my $default_dictionary = '/usr/share/dict/words';
-my %opt = ();
+my %opt = (suffix => 1);
 if (defined $ENV{PASSPHRASE_DICT}) {
     $opt{dictionary} = $ENV{PASSPHRASE_DICT};
 }
@@ -38,6 +38,7 @@ Getopt::Long::GetOptions(
         help2!
         man!
 
+        suffix!
         verbose!
         dictionary=s
         dev-random!
@@ -72,6 +73,7 @@ while (<$DICT>) {
     chomp;
     s/\r$//;
     next if not /^[a-z]+$/;
+    next if not $opt{suffix} and /(s|ed|ing)$/;
     push @words, $_;
 }
 close $DICT or die "$opt{dictionary}: $!\n";
@@ -266,6 +268,7 @@ gen-passphrase [options] initials|word-count min-len max-len
     -help2      Show long usage message
     -man        Show long usage message (invokes pager)
 
+    -[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
     -verbose          Show statistics about the strength of the passphrase
     -dictionary file  Use specified word list
                       Default is /usr/share/dict/words or $PASSPHRASE_DICT
@@ -319,6 +322,15 @@ Show long usage message
 =item B<-man>
 
 Show long usage message using B<perldoc>, invokes pager
+
+=item B<-[no]suffix>
+
+B<-suffix>, the default, allows words ending in s, ed, and ing
+(which are typically forms of other words).
+
+B<-nosuffix> excludes such words.  This typically reduces the number of
+available words by about half.  If you use this option, use B<-verbose>
+to see the effects, and consider using more and/or longer words.
 
 =item B<-verbose>
 

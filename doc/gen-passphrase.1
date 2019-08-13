@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "GEN-PASSPHRASE 1"
-.TH GEN-PASSPHRASE 1 "2019-07-30" "perl v5.26.1" "User Contributed Perl Documentation"
+.TH GEN-PASSPHRASE 1 "2019-08-13" "perl v5.26.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -147,6 +147,7 @@ gen-passphrase [options] initials|word\-count min-len max-len
 \&    \-help2      Show long usage message
 \&    \-man        Show long usage message (invokes pager)
 \&
+\&    \-[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
 \&    \-verbose          Show statistics about the strength of the passphrase
 \&    \-dictionary file  Use specified word list
 \&                      Default is /usr/share/dict/words or $PASSPHRASE_DICT
@@ -193,6 +194,14 @@ Show long usage message
 .IP "\fB\-man\fR" 4
 .IX Item "-man"
 Show long usage message using \fBperldoc\fR, invokes pager
+.IP "\fB\-[no]suffix\fR" 4
+.IX Item "-[no]suffix"
+\&\fB\-suffix\fR, the default, allows words ending in s, ed, and ing
+(which are typically forms of other words).
+.Sp
+\&\fB\-nosuffix\fR excludes such words.  This typically reduces the number of
+available words by about half.  If you use this option, use \fB\-verbose\fR
+to see the effects, and consider using more and/or longer words.
 .IP "\fB\-verbose\fR" 4
 .IX Item "-verbose"
 Show statistics about the strength of the passphrase
