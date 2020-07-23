@@ -290,8 +290,9 @@ which suggests using long passphrases consisting of randomly selected
 English words.  The example in the cartoon was "correct horse battery
 staple" (of course you shouldn't use *that* specific passphrase).
 
-The passphrase consists of a sequence of words randomly selected
-from the specified word list file.  The three command-line arguments
+The passphrase consists of a sequence of words randomly selected from
+the specified word list file.  Only words consisting entirely of ASCII
+lower-case letters are considered.  The three command-line arguments
 (following any options) are:
 
 1. B<Either> a string of ASCII lowercase letters B<or> a decimal integer
