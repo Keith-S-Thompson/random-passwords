@@ -1,4 +1,4 @@
-Copyright (C) 2019 Keith Thompson
+Copyright (C) 2020 Keith Thompson
 
 ### UPDATE, Mon 2019-05-06 :
 
