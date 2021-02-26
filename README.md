@@ -3,7 +3,7 @@ Copyright (C) 2020 Keith Thompson
 ### UPDATE, Mon 2019-05-06 :
 
 Corrected a bug that caused `gen-passphrase` to break on systems
-were Perl uses 32-bit integers.  (This was not a security hole;
+where Perl uses 32-bit integers.  (This was not a security hole;
 the command would simply fail.)
 
 https://github.com/Keith-S-Thompson/random-passwords/issues/4
