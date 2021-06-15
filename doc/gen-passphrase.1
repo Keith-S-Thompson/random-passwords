@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "GEN-PASSPHRASE 1"
-.TH GEN-PASSPHRASE 1 "2020-07-23" "perl v5.30.0" "User Contributed Perl Documentation"
+.TH GEN-PASSPHRASE 1 "2021-06-15" "perl v5.30.0" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -144,12 +144,10 @@ gen\-passphrase \- Generate random passphrases
 .IX Header "SYNOPSIS"
 gen-passphrase [options] initials|word\-count min-len max-len
 .PP
-.Vb 5
+.Vb 3
 \& Options:
-\&    \-help       Show short usage message
-\&    \-help1      Show medium usage message
-\&    \-help2      Show long usage message
-\&    \-man        Show long usage message (invokes pager)
+\&    \-help|\-help1|\-help2  Show short|medium|long usage message
+\&    \-man                 Show long usage message (invokes pager)
 \&
 \&    \-[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
 \&    \-verbose          Show statistics about the strength of the passphrase

@@ -1,4 +1,4 @@
-Copyright (C) 2020 Keith Thompson
+Copyright (C) 2021 Keith Thompson
 
 ### UPDATE, Mon 2019-05-06 :
 
@@ -97,34 +97,35 @@ answer](http://superuser.com/a/359601/92954) I posted on
 # `gen-password`
 
 This is the output of `gen-password -help` from a previous release (to be updated, but the options haven't changed):
-
-    Usage: gen-password [options]
-        -help, -h     Display this message and exit
-        -length N     Length of generated password, default is 12
-        -charset ...  Character set, default is "a-z0-9"
-                      The argument is a single word.
-        -decimal      Equivalent to "-charset 0-9"
-        -digit        Same as -decimal
-        -hexadecimal  Equivalent to "-charset 0-9a-f"
-        -Hexadecimal  Equivalent to "-charset 0-9A-F"
-        -octal        Equivalent to "-charset 0-7"
-        -lower        Equivalent to "-charset a-z"
-        -upper        Equivalent to "-charset A-Z"
-        -alphanumeric Equivalent to "-charset A-Za-z0-9"
-        -printable    Equivalent to "-charset !-~"
-                      (ASCII non-blank printable characters)
-        -1lower       Include (at least) 1 lower case letter
-        -1upper       Include (at least) 1 upper case letter
-        -1decimal     Include (at least) 1 decimal digit
-        -1digit       Same as -1decimal
-        -1punctuation Include (at least) 1 punctuation character
-        -1charset ... Include (at least) 1 character from the specified set
-                      This option may be given multiple times
-                      (The other -1... options may only be given once)
-                      Use "-1charset 0-9 -1charset 0-9" for 2 decimal digits
-        -split N      Split with a blank every N characters
-        -dev-random   Use /dev/random rather than /dev/urandom (slow)
-        -debugging    Produce debugging output
+```
+Usage: gen-password [options]
+    -help, -h     Display this message and exit
+    -length N     Length of generated password, default is 12
+    -charset ...  Character set, default is "a-z0-9"
+                  The argument is a single word.
+    -decimal      Equivalent to "-charset 0-9"
+    -digit        Same as -decimal
+    -hexadecimal  Equivalent to "-charset 0-9a-f"
+    -Hexadecimal  Equivalent to "-charset 0-9A-F"
+    -octal        Equivalent to "-charset 0-7"
+    -lower        Equivalent to "-charset a-z"
+    -upper        Equivalent to "-charset A-Z"
+    -alphanumeric Equivalent to "-charset A-Za-z0-9"
+    -printable    Equivalent to "-charset !-~"
+                  (ASCII non-blank printable characters)
+    -1lower       Include (at least) 1 lower case letter
+    -1upper       Include (at least) 1 upper case letter
+    -1decimal     Include (at least) 1 decimal digit
+    -1digit       Same as -1decimal
+    -1punctuation Include (at least) 1 punctuation character
+    -1charset ... Include (at least) 1 character from the specified set
+                  This option may be given multiple times
+                  (The other -1... options may only be given once)
+                  Use "-1charset 0-9 -1charset 0-9" for 2 decimal digits
+    -split N      Split with a blank every N characters
+    -dev-random   Use /dev/random rather than /dev/urandom (slow)
+    -debugging    Produce debugging output
+```
 
 The program assumes an ASCII character set. For example, it assumes that 
 the set of lower case letters is `'a'` .. `'z'` 
@@ -134,23 +135,24 @@ the set of lower case letters is `'a'` .. `'z'`
 # `gen-passphrase`
 
 This is the output of `gen-passphrase -help` from a previous release (to be updated, but the options haven't changed):
-
-    Usage: gen-passphrase [options] initials   min-len max-len
-           gen-passphrase [options] word-count min-len max-len
-        -help             Show this message and exit
-        -verbose          Show statistics about the strength of the passphrase
-        -dictionary file  Use specified word list
-                          Default is /usr/share/dict/words or $PASSPHRASE_DICT
-        -dev-random       Use /dev/random rather than /dev/urandom (slow)
-        -debugging        Produce debugging output
-    Option names may be abbreviated; for example, "-verbose" may be given as "-v".
-    The passphrase consists of a sequence of words randomly selected
-    from the specified word list file.
-    The first argument is either a string of lowercase letters
-    (specifying the initial letters of the generated passphrase) or a
-    decimal integer specifying the number of words.
-    "min-len" and "max-len" are decimal integers determining the lengths
-    of the chosen words
+```
+Usage: gen-passphrase [options] initials   min-len max-len
+       gen-passphrase [options] word-count min-len max-len
+    -help             Show this message and exit
+    -verbose          Show statistics about the strength of the passphrase
+    -dictionary file  Use specified word list
+                      Default is /usr/share/dict/words or $PASSPHRASE_DICT
+    -dev-random       Use /dev/random rather than /dev/urandom (slow)
+    -debugging        Produce debugging output
+Option names may be abbreviated; for example, "-verbose" may be given as "-v".
+The passphrase consists of a sequence of words randomly selected
+from the specified word list file.
+The first argument is either a string of lowercase letters
+(specifying the initial letters of the generated passphrase) or a
+decimal integer specifying the number of words.
+"min-len" and "max-len" are decimal integers determining the lengths
+of the chosen words
+```
 
 The passphrase consists of a sequence of words randomly selected
 from the specified word list file.  The three command-line arguments
@@ -194,26 +196,28 @@ on the size of the dictionary file being used. For example, on Solaris
 
 Here's an example of `gen-passphrase` with options that *could*
 generate "correct horse battery staple", executed on Ubuntu 12.04:
-
-    $ gen-passphrase -v chbs 5 7
-    chasing hearsay bygones smocked
-        1881 * 843 * 1586 * 2817
-        7.0844e12 possibilities, equivalent to:
-        42.69 random bits,
-        9.08 random lowercase letters,
-        7.17 random mixed-case alphanumerics,
-        6.51 random printable ASCII characters
+```
+$ gen-passphrase -v chbs 5 7
+chasing hearsay bygones smocked
+    1881 * 843 * 1586 * 2817
+    7.0844e12 possibilities, equivalent to:
+    42.69 random bits,
+    9.08 random lowercase letters,
+    7.17 random mixed-case alphanumerics,
+    6.51 random printable ASCII characters
+```
 
 and on CentOS 5.7, with a much larger dictionary:
-
-    $ gen-passphrase -v chbs 5 7
-    cepous halpace bundist subfix
-        7117 * 2895 * 5952 * 9233
-        1.1322e15 possibilities, equivalent to:
-        50.01 random bits
-        10.64 random lowercase letters
-        8.40 random mixed-case alphanumerics
-        7.63 random printable ASCII characters
+```
+$ gen-passphrase -v chbs 5 7
+cepous halpace bundist subfix
+    7117 * 2895 * 5952 * 9233
+    1.1322e15 possibilities, equivalent to:
+    50.01 random bits
+    10.64 random lowercase letters
+    8.40 random mixed-case alphanumerics
+    7.63 random printable ASCII characters
+```
 
 This indicates that the generated passphrase on Ubuntu is approximately
 as secure as `vsxdrnhli` (9 random lowercase letters) or `0Z4sLMl` (7
@@ -224,7 +228,7 @@ difficult to remember (*"cepous halpace bundist subfix"? Really?*).
 Note that this shows the number of possibilities *given the criteria
 you chose*. With the Ubuntu example above ("chasing hearsay bygones
 smocked"), a hypothetical attacker has over 7 trillion possibilities to
-consider *if* he or she knows that your passphrase consists of 4 words
+consider *if* they know that your passphrase consists of 4 words
 starting with 'c', 'h', 'b', and 's', with 5 to 7 letters in each word.
 Without that knowledge, the attacker's problem space is much larger.
 

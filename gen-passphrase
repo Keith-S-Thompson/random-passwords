@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2020 Keith Thompson
+# Copyright (C) 2021 Keith Thompson
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -263,10 +263,8 @@ gen-passphrase - Generate random passphrases
 gen-passphrase [options] initials|word-count min-len max-len
 
  Options:
-    -help       Show short usage message
-    -help1      Show medium usage message
-    -help2      Show long usage message
-    -man        Show long usage message (invokes pager)
+    -help|-help1|-help2  Show short|medium|long usage message
+    -man                 Show long usage message (invokes pager)
 
     -[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
     -verbose          Show statistics about the strength of the passphrase
