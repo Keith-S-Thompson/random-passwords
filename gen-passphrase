@@ -59,7 +59,9 @@ if (not (scalar @ARGV == 3 and
 }
 
 my($selector, $min_len, $max_len) = @ARGV;
-usage("max_len must be >= min_len\n") if $max_len < $min_len;
+if ($max_len < $min_len) {
+    Pod::Usage::pod2usage(-message => "max_len must be >= min_len", -verbose => 0, -exitvalue => 1);
+}
 
 my $use_initials = ($selector =~ /^[a-z]+$/);
 
