@@ -75,7 +75,7 @@ while (<$DICT>) {
     chomp;
     s/\r$//;
     next if not /^[a-z]+$/;
-    next if not $opt{suffix} and /(s|ed|ing)$/;
+    next if not $opt{suffix} and /(?:s|ed|ing)$/;
     push @words, $_;
 }
 close $DICT or die "$opt{dictionary}: $!\n";
@@ -206,10 +206,10 @@ sub random {
 # Returns a list of words satisfying the specified criteria
 #
 sub words {
-    my($initial, $min_len, $max_len) = @_;
+    my($initial, $minlen, $maxlen) = @_;
     return grep { (defined $initial ? substr($_, 0, 1) eq $initial : 1) and
-                  length $_ >= $min_len and
-                  length $_ <= $max_len } @words;
+                  length $_ >= $minlen and
+                  length $_ <= $maxlen } @words;
 }
 
 #
