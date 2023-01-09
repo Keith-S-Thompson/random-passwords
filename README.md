@@ -94,7 +94,7 @@ answer](http://superuser.com/a/359601/92954) I posted on
 
 ---
 
-# `gen-password`
+## `gen-password`
 
 This is the output of `gen-password -help2`:
 ```
@@ -228,7 +228,7 @@ the set of lower case letters is `'a'` .. `'z'`
 
 ---
 
-# `gen-passphrase`
+## `gen-passphrase`
 
 This is the output of `gen-passphrase -help2`:
 ```
@@ -331,6 +331,50 @@ AUTHOR
 
 LICENSE AND COPYRIGHT
     random-passphrase is released under GPL version 2 or later.
+```
+
+The passphrase consists of a sequence of words randomly selected
+from the specified word list file.  The three command-line arguments
+(following any options) are:
+
+1. Either:
+
+   * A string of ASCII lowercase letters, specifying the initials
+   of the generated passphrase; or
+   * A decimal integer specifying the number of words (each of which
+   will be selected randomly from the entire word list);
+
+2. The minimum length of each word; and
+
+3. The maximum length of each word.
+
+This was partly inspired by [this XKCD cartoon](http://xkcd.com/936/),
+which suggests using long passphrases consisting of randomly selected
+English words.  The example in the cartoon was "correct horse battery
+staple" (of course you shouldn't use *that* specific passphrase).
+
+With the first option, giving a string of lowercase letters as the
+first argument, you can specify a known word that will remind you
+of the passphrase; for example, "hello" might yield "hellion erosion
+leprosy legless outlook".
+
+Words are randomly selected from the word list file, usually
+`/usr/share/dict/words`. Only lines consisting entirely of
+lowercase letters are considered. You can specify a different
+dictionary file by using the `-dictionary` option or by setting the
+`$PASSPHRASE_DICT` environment variable. (For example, Cygwin has no
+`/usr/share/dict/words`, so I set `$PASSPHRASE_DICT` to point to a copy
+from my Ubuntu system).
+
+With the `-verbose` option, `gen-passphrase` shows some statistics
+about the estimated strength of the generated passphrase, based on the
+number of possibilities for each word. The statistics shown will depend
+on the size of the dictionary file being used. For example, on Solaris
+9 `/usr/dict/words` has 20,068 qualifying entries; on Ubuntu 12.04
+`/usr/share/dict/words` has 62,887, and on Centos 5.7 it has 355,543.
+
+Here's an example of `gen-passphrase` with options that *could*
+generate "correct horse battery staple", executed on Ubuntu 12.04:
 ```
 $ gen-passphrase -v chbs 5 7
 chasing hearsay bygones smocked
