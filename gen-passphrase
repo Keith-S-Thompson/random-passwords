@@ -38,6 +38,7 @@ Getopt::Long::GetOptions(
         help2!
         man!
 
+        n!
         suffix!
         verbose!
         dictionary=s
@@ -141,7 +142,12 @@ if (@errors) {
     die @errors;
 }
 
-print "@passphrase\n";
+if ($opt{n}) {
+    print "@passphrase";
+}
+else {
+    print "@passphrase\n";
+}
 if ($opt{verbose}) {
     if ($use_initials) {
         $stats .= "    " . join(' * ', @counts) . "\n";
@@ -268,6 +274,8 @@ gen-passphrase [options] initials|word-count min-len max-len
     -help|-help1|-help2  Show short|medium|long usage message
     -man                 Show long usage message (invokes pager)
 
+    -n                Don't print a newline after the passphrase
+                      (This interacts poorly with "-verbose")
     -[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
     -verbose          Show statistics about the strength of the passphrase
     -dictionary file  Use specified word list
@@ -323,6 +331,12 @@ Show long usage message
 =item B<-man>
 
 Show long usage message using B<perldoc>, invokes pager
+
+=item B<-n>
+
+Don't print a newline after the passphrase.
+
+(This interacts poorly with the B<-verbose> option.)
 
 =item B<-[no]suffix>
 

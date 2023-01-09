@@ -1,4 +1,4 @@
-Copyright (C) 2021 Keith Thompson
+Copyright (C) 2023 Keith Thompson
 
 ### UPDATE, Mon 2019-05-06 :
 
@@ -96,35 +96,131 @@ answer](http://superuser.com/a/359601/92954) I posted on
 
 # `gen-password`
 
-This is the output of `gen-password -help` from a previous release (to be updated, but the options haven't changed):
+This is the output of `gen-password -help2`:
 ```
-Usage: gen-password [options]
-    -help, -h     Display this message and exit
-    -length N     Length of generated password, default is 12
-    -charset ...  Character set, default is "a-z0-9"
-                  The argument is a single word.
-    -decimal      Equivalent to "-charset 0-9"
-    -digit        Same as -decimal
-    -hexadecimal  Equivalent to "-charset 0-9a-f"
-    -Hexadecimal  Equivalent to "-charset 0-9A-F"
-    -octal        Equivalent to "-charset 0-7"
-    -lower        Equivalent to "-charset a-z"
-    -upper        Equivalent to "-charset A-Z"
-    -alphanumeric Equivalent to "-charset A-Za-z0-9"
-    -printable    Equivalent to "-charset !-~"
-                  (ASCII non-blank printable characters)
-    -1lower       Include (at least) 1 lower case letter
-    -1upper       Include (at least) 1 upper case letter
-    -1decimal     Include (at least) 1 decimal digit
-    -1digit       Same as -1decimal
-    -1punctuation Include (at least) 1 punctuation character
-    -1charset ... Include (at least) 1 character from the specified set
-                  This option may be given multiple times
-                  (The other -1... options may only be given once)
-                  Use "-1charset 0-9 -1charset 0-9" for 2 decimal digits
-    -split N      Split with a blank every N characters
-    -dev-random   Use /dev/random rather than /dev/urandom (slow)
-    -debugging    Produce debugging output
+NAME
+    gen-password - Generate random passwords
+
+SYNOPSIS
+    gen-password [options]
+
+     Options:
+        -help|-help1|-help2  Show short|medium|long usage message
+        -man                 Show long usage message (invokes pager)
+
+    Too many options to show here.
+
+    Use -help1, -help2, or -man to see more options.
+
+DESCRIPTION
+    gen-password generates random passwords.
+
+    It is part of the random-passwords package, available at
+
+    <https://github.com/Keith-S-Thompson/random-passwords>
+
+    More documentation is available there.
+
+    By default, a 12-character password is generated, consisting of
+    lowercase letters and decimal digits. Options let you control the length
+    and valid characters, and to add specified single characters (for
+    example if you need a 16-character password with 1 digit, 1 uppercase
+    letter, and 1 punctuation character).
+
+    There is currently no option to use non-ASCII characters.
+
+OPTIONS
+    All options may be abbreviated uniquely. -help may be abbreviated as -h.
+
+    -help
+        Show short usage message
+
+    -help1
+        Show medium usage message
+
+    -help2
+        Show long usage message
+
+    -man
+        Show long usage message using perldoc, invokes pager
+
+    -n  Don't print a newline after the password
+
+    -length N
+        Length of generated password, default is 12
+
+    -charset ...
+        Character set, default is "a-z0-9"
+
+        The argument is a single word.
+
+    -decimal, -digits
+        Equivalent to -charset 0-9
+
+    -hexadecimal
+        Equivalent to -charset 0-9a-f
+
+    -Hexadecimal
+        Equivalent to -charset 0-9A-F
+
+    -octal
+        Equivalent to -charset 0-7
+
+    -lower
+        Equivalent to -charset a-z
+
+    -upper
+        Equivalent to -charset A-Z
+
+    -alphanumeric
+        Equivalent to -charset A-Za-z0-9
+
+    -printable
+        Equivalent to "-charset !-~" (ASCII non-blank printable characters)
+
+    -1lower
+        Include (at least) 1 lower case letter
+
+    -1upper
+        Include (at least) 1 upper case letter
+
+    -1decimal -1digit
+        Include (at least) 1 decimal digit
+
+    -1punctuation
+        Include (at least) 1 punctuation character
+
+    -1charset ...
+        Include (at least) 1 character from the specified set
+
+        This option may be given multiple times. (The other -1... options
+        may only be given once.) Use -1charset 0-9 -1charset 0-9 for 2
+        decimal digits.
+
+        NOTE: A literal hyphen - character should be specified first or
+        last; otherwise it specifies a range.
+
+    -split N
+        Split with a blank every N characters
+
+    -dev-random
+        Use /dev/random rather than /dev/urandom
+
+        This can be much slower and is probably unnecessary.
+
+    -debugging
+        Produce debugging output (developer option)
+
+SEE ALSO
+    gen-password, also part of the random-passwords package.
+
+    <https://github.com/Keith-S-Thompson/random-passwords>.
+
+AUTHOR
+    Keith Thompson <Keith.S.Thompson@gmail.com>
+
+LICENSE AND COPYRIGHT
+    random-password is released under GPL version 2 or later.
 ```
 
 The program assumes an ASCII character set. For example, it assumes that 
@@ -134,68 +230,107 @@ the set of lower case letters is `'a'` .. `'z'`
 
 # `gen-passphrase`
 
-This is the output of `gen-passphrase -help` from a previous release (to be updated, but the options haven't changed):
+This is the output of `gen-passphrase -help2`:
 ```
-Usage: gen-passphrase [options] initials   min-len max-len
-       gen-passphrase [options] word-count min-len max-len
-    -help             Show this message and exit
-    -verbose          Show statistics about the strength of the passphrase
-    -dictionary file  Use specified word list
-                      Default is /usr/share/dict/words or $PASSPHRASE_DICT
-    -dev-random       Use /dev/random rather than /dev/urandom (slow)
-    -debugging        Produce debugging output
-Option names may be abbreviated; for example, "-verbose" may be given as "-v".
-The passphrase consists of a sequence of words randomly selected
-from the specified word list file.
-The first argument is either a string of lowercase letters
-(specifying the initial letters of the generated passphrase) or a
-decimal integer specifying the number of words.
-"min-len" and "max-len" are decimal integers determining the lengths
-of the chosen words
-```
+NAME
+    gen-passphrase - Generate random passphrases
 
-The passphrase consists of a sequence of words randomly selected
-from the specified word list file.  The three command-line arguments
-(following any options) are:
+SYNOPSIS
+    gen-passphrase [options] initials|word-count min-len max-len
 
-1. Either:
+     Options:
+        -help|-help1|-help2  Show short|medium|long usage message
+        -man                 Show long usage message (invokes pager)
 
-   * A string of ASCII lowercase letters, specifying the initials
-   of the generated passphrase; or
-   * A decimal integer specifying the number of words (each of which
-   will be selected randomly from the entire word list);
+        -n                Don't print a newline after the passphrase
+                          (This interacts poorly with "-verbose")
+        -[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
+        -verbose          Show statistics about the strength of the passphrase
+        -dictionary file  Use specified word list
+                          Default is /usr/share/dict/words or $PASSPHRASE_DICT
+        -dev-random       Use /dev/random rather than /dev/urandom (slow)
+        -debugging        Produce debugging output (developer option)
 
-2. The minimum length of each word; and
+DESCRIPTION
+    gen-passphrase generates random passphrases.
 
-3. The maximum length of each word.
+    It is part of the random-passwords package, available at
 
-This was partly inspired by [this XKCD cartoon](http://xkcd.com/936/),
-which suggests using long passphrases consisting of randomly selected
-English words.  The example in the cartoon was "correct horse battery
-staple" (of course you shouldn't use *that* specific passphrase).
+    <https://github.com/Keith-S-Thompson/random-passwords>
 
-With the first option, giving a string of lowercase letters as the
-first argument, you can specify a known word that will remind you
-of the passphrase; for example, "hello" might yield "hellion erosion
-leprosy legless outlook".
+    More documentation is available there.
 
-Words are randomly selected from the word list file, usually
-`/usr/share/dict/words`. Only lines consisting entirely of
-lowercase letters are considered. You can specify a different
-dictionary file by using the `-dictionary` option or by setting the
-`$PASSPHRASE_DICT` environment variable. (For example, Cygwin has no
-`/usr/share/dict/words`, so I set `$PASSPHRASE_DICT` to point to a copy
-from my Ubuntu system).
+    gen-passphrase was partly inspired by this XKCD cartoon:
+    <http://xkcd.com/936/>, which suggests using long passphrases consisting
+    of randomly selected English words. The example in the cartoon was
+    "correct horse battery staple" (of course you shouldn't use *that*
+    specific passphrase).
 
-With the `-verbose` option, `gen-passphrase` shows some statistics
-about the estimated strength of the generated passphrase, based on the
-number of possibilities for each word. The statistics shown will depend
-on the size of the dictionary file being used. For example, on Solaris
-9 `/usr/dict/words` has 20,068 qualifying entries; on Ubuntu 12.04
-`/usr/share/dict/words` has 62,887, and on Centos 5.7 it has 355,543.
+    The passphrase consists of a sequence of words randomly selected from
+    the specified word list file. Only words consisting entirely of ASCII
+    lower-case letters are considered. The three command-line arguments
+    (following any options) are:
 
-Here's an example of `gen-passphrase` with options that *could*
-generate "correct horse battery staple", executed on Ubuntu 12.04:
+    1. Either a string of ASCII lowercase letters or a decimal integer
+    specifying the number of words;
+
+    2. The minimum length of each word; and
+
+    3. The maximum length of each word.
+
+OPTIONS
+    All options may be abbreviated uniquely. -help may be abbreviated as -h.
+
+    -help
+        Show short usage message
+
+    -help1
+        Show medium usage message
+
+    -help2
+        Show long usage message
+
+    -man
+        Show long usage message using perldoc, invokes pager
+
+    -n  Don't print a newline after the passphrase.
+
+        (This interacts poorly with the -verbose option.)
+
+    -[no]suffix
+        -suffix, the default, allows words ending in s, ed, and ing (which
+        are typically forms of other words).
+
+        -nosuffix excludes such words. This typically reduces the number of
+        available words by about half. If you use this option, use -verbose
+        to see the effects, and consider using more and/or longer words.
+
+    -verbose
+        Show statistics about the strength of the passphrase
+
+    -dictionary *file*
+        Use specified word list
+
+        Default is /usr/share/dict/words or $PASSPHRASE_DICT
+
+    -dev-random
+        Use /dev/random rather than /dev/urandom
+
+        This can be much slower and is probably unnecessary.
+
+    -debugging
+        Produce debugging output (developer option)
+
+SEE ALSO
+    gen-passphrase, also part of the random-passwords package.
+
+    <https://github.com/Keith-S-Thompson/random-passwords>.
+
+AUTHOR
+    Keith Thompson <Keith.S.Thompson@gmail.com>
+
+LICENSE AND COPYRIGHT
+    random-passphrase is released under GPL version 2 or later.
 ```
 $ gen-passphrase -v chbs 5 7
 chasing hearsay bygones smocked
