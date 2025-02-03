@@ -1,74 +1,6 @@
 Copyright (C) 2025 Keith Thompson
 
-### UPDATE, Sun 2025-02-02 :
-
-Increased default password length for `gen-password` from 12 to 16 characters.
-
-### UPDATE, Mon 2019-05-06 :
-
-Corrected a bug that caused `gen-passphrase` to break on systems
-where Perl uses 32-bit integers.  (This was not a security hole;
-the command would simply fail.)
-
-https://github.com/Keith-S-Thompson/random-passwords/issues/4
-
-### UPDATE, Tue 2019-02-27 :
-
-I've corrected a minor formatting bug, an incorrect interaction between
-the "`-split N`" option and the `-1digit` et al singleton options.
-
-https://github.com/Keith-S-Thompson/random-passwords/issues/3
-
-### UPDATE, Mon 2018-06-04 :
-
-I've added options to `gen-password` to require specified single
-characters.  For example, if a site requires at least one decimal
-digit and one punctuation character, you can use:
-
-    gen-password -len 12 -lower -1decimal -1punctuation
-
-Some sites restrict which punctuation characters can be used.  Use the
-`-1charset` option for that (which can be given multiple times).
-
-### UPDATE, Wed 2014-08-06 :
-
-A very minor bug in `gen-password` caused a warning message:
-
-    defined(@array) is deprecated at /home/kst/bin/gen-password line 151.
-            (Maybe you should just omit the defined()?)
-
-to appear when using recent versions of Perl.  (The warning appears
-with Perl 5.16.3, but not with Perl 5.14.4.)  This bug had no effect
-other than printing the warning message.  I've corrected it.
-
-### UPDATE, Sat 2014-04-12 :
-
-A bug was recently discovered in the `gen-passphrase` command.
-This bug did not affect the security of the generated passphrases,
-but it did cause the command to go into an infinite loop if the
-provided dictionary is very long (specifically, if there are more
-than 65536 candidate words to choose from).
-
-An update I made a few days ago did not correctly fix this problem.
-It avoided the infinite loop, but caused the program to ignore all
-but the first 65536 eligible words.  In some cases this could create
-a bias for words earlier in the alphabet.  This shouldn't have caused
-a problem if you specify the initials of the random words (unless you
-have a *huge* dictionary), but it could show up if you instead specify
-the number of words.  It could also cause a generated passphrase to be
-(slightly) less secure than implied by statistics reported with the
-"-v" option.
-
-The problem is now corrected, and `gen-passphrase` should in principle
-handle up to 2<sup>32</sup> words (though it would probably run out
-of memory before that).
-
-My thanks to Jimmy Wales (yes, *that* [Jimmy
-Wales](http://en.wikipedia.org/wiki/Jimmy_wales)) for finding and
-reporting the original bug, and for letting me know that somebody
-out there is actually using this.
-
----
+See the bottom of this `README.md` file for updates.
 
 `random-passwords` is released under GPL version 2 or later.  See the
 header comments in `gen-passphrase` and `gen-password` and the file
@@ -414,6 +346,76 @@ smocked"), a hypothetical attacker has over 7 trillion possibilities to
 consider *if* they know that your passphrase consists of 4 words
 starting with 'c', 'h', 'b', and 's', with 5 to 7 letters in each word.
 Without that knowledge, the attacker's problem space is much larger.
+
+---
+
+### UPDATE, Sun 2025-02-02 :
+
+Increased default password length for `gen-password` from 12 to 16 characters.
+
+### UPDATE, Mon 2019-05-06 :
+
+Corrected a bug that caused `gen-passphrase` to break on systems
+where Perl uses 32-bit integers.  (This was not a security hole;
+the command would simply fail.)
+
+https://github.com/Keith-S-Thompson/random-passwords/issues/4
+
+### UPDATE, Tue 2019-02-27 :
+
+I've corrected a minor formatting bug, an incorrect interaction between
+the "`-split N`" option and the `-1digit` et al singleton options.
+
+https://github.com/Keith-S-Thompson/random-passwords/issues/3
+
+### UPDATE, Mon 2018-06-04 :
+
+I've added options to `gen-password` to require specified single
+characters.  For example, if a site requires at least one decimal
+digit and one punctuation character, you can use:
+
+    gen-password -len 12 -lower -1decimal -1punctuation
+
+Some sites restrict which punctuation characters can be used.  Use the
+`-1charset` option for that (which can be given multiple times).
+
+### UPDATE, Wed 2014-08-06 :
+
+A very minor bug in `gen-password` caused a warning message:
+
+    defined(@array) is deprecated at /home/kst/bin/gen-password line 151.
+            (Maybe you should just omit the defined()?)
+
+to appear when using recent versions of Perl.  (The warning appears
+with Perl 5.16.3, but not with Perl 5.14.4.)  This bug had no effect
+other than printing the warning message.  I've corrected it.
+
+### UPDATE, Sat 2014-04-12 :
+
+A bug was recently discovered in the `gen-passphrase` command.
+This bug did not affect the security of the generated passphrases,
+but it did cause the command to go into an infinite loop if the
+provided dictionary is very long (specifically, if there are more
+than 65536 candidate words to choose from).
+
+An update I made a few days ago did not correctly fix this problem.
+It avoided the infinite loop, but caused the program to ignore all
+but the first 65536 eligible words.  In some cases this could create
+a bias for words earlier in the alphabet.  This shouldn't have caused
+a problem if you specify the initials of the random words (unless you
+have a *huge* dictionary), but it could show up if you instead specify
+the number of words.  It could also cause a generated passphrase to be
+(slightly) less secure than implied by statistics reported with the
+"-v" option.
+
+The problem is now corrected, and `gen-passphrase` should in principle
+handle up to 2<sup>32</sup> words (though it would probably run out
+of memory before that).
+
+My thanks to Jimmy Wales (yes, *that* [Jimmy
+Wales](http://en.wikipedia.org/wiki/Jimmy_wales)) for finding and
+reporting the original bug, and for letting me know that somebody
+out there is actually using this.
 
 ---
 
