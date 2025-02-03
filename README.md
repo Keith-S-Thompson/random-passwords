@@ -1,4 +1,8 @@
-Copyright (C) 2023 Keith Thompson
+Copyright (C) 2025 Keith Thompson
+
+### UPDATE, Sun 2025-02-02 :
+
+Increased default password length for `gen-password` from 12 to 16 characters.
 
 ### UPDATE, Mon 2019-05-06 :
 
