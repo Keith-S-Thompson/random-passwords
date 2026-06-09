@@ -7,10 +7,10 @@ gen-password - Generate random passwords
 gen-password \[options\]
 
     Options:
-       -help       Show short usage message
-       -help1      Show medium usage message
-       -help2      Show long usage message
-       -man        Show long usage message (invokes pager)
+       -help|-help1|-help2  Show short|medium|long usage message
+       -man                 Show long usage message (invokes pager)
+
+Too many options to show here.
 
 Use **-help1**, **-help2**, or **-man** to see more options.
 
@@ -24,7 +24,7 @@ It is part of the **random-passwords** package, available at
 
 More documentation is available there.
 
-By default, a 12-character password is generated, consisting of
+By default, a 16-character password is generated, consisting of
 lowercase letters and decimal digits.  Options let you control the
 length and valid characters, and to add specified single characters
 (for example if you need a 16-character password with 1 digit,
@@ -52,9 +52,13 @@ All options may be abbreviated uniquely.  **-help** may be abbreviated as **-h**
 
     Show long usage message using **perldoc**, invokes pager
 
+- **-n**
+
+    Don't print a newline after the password
+
 - **-length N**
 
-    Length of generated password, default is 12
+    Length of generated password, default is 16
 
 - **-charset ...**
 
@@ -117,6 +121,9 @@ All options may be abbreviated uniquely.  **-help** may be abbreviated as **-h**
     This option may be given multiple times.
     (The other **-1...** options may only be given once.)
     Use **-1charset 0-9 -1charset 0-9** for 2 decimal digits.
+
+    NOTE: A literal hyphen **-** character should be specified first or
+    last; otherwise it specifies a range.
 
 - **-split N**
 

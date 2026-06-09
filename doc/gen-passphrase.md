@@ -7,11 +7,11 @@ gen-passphrase - Generate random passphrases
 gen-passphrase \[options\] initials|word-count min-len max-len
 
     Options:
-       -help       Show short usage message
-       -help1      Show medium usage message
-       -help2      Show long usage message
-       -man        Show long usage message (invokes pager)
+       -help|-help1|-help2  Show short|medium|long usage message
+       -man                 Show long usage message (invokes pager)
 
+       -n                Don't print a newline after the passphrase
+                         (This interacts poorly with "-verbose")
        -[no]suffix       Allow/disallow words ending in s, ed, ing (enabled by default)
        -verbose          Show statistics about the strength of the passphrase
        -dictionary file  Use specified word list
@@ -34,8 +34,9 @@ which suggests using long passphrases consisting of randomly selected
 English words.  The example in the cartoon was "correct horse battery
 staple" (of course you shouldn't use \*that\* specific passphrase).
 
-The passphrase consists of a sequence of words randomly selected
-from the specified word list file.  The three command-line arguments
+The passphrase consists of a sequence of words randomly selected from
+the specified word list file.  Only words consisting entirely of ASCII
+lower-case letters are considered.  The three command-line arguments
 (following any options) are:
 
 1\. **Either** a string of ASCII lowercase letters **or** a decimal integer
@@ -64,6 +65,12 @@ All options may be abbreviated uniquely.  **-help** may be abbreviated as **-h**
 - **-man**
 
     Show long usage message using **perldoc**, invokes pager
+
+- **-n**
+
+    Don't print a newline after the passphrase.
+
+    (This interacts poorly with the **-verbose** option.)
 
 - **-\[no\]suffix**
 
