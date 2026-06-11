@@ -44,9 +44,9 @@ install: manpages prefix_is_defined
 	$(INSTALL_FILE) COPYING $(PREFIX)
 	$(INSTALL_FILE) README.md $(PREFIX)
 	$(INSTALL_PROGRAM) gen-passphrase $(PREFIX)/bin
-	ln -s gen-passphrase $(PREFIX)/bin/gpw
+	ln -sf gen-passphrase $(PREFIX)/bin/gpw
 	$(INSTALL_PROGRAM) gen-password $(PREFIX)/bin
-	ln -s gen-password $(PREFIX)/bin/gpp
+	ln -sf gen-password $(PREFIX)/bin/gpp
 	$(INSTALL_FILE) doc/gen-passphrase.1 $(PREFIX)/share/man/man1//gen-passphrase.1 
 	$(INSTALL_FILE) doc/gen-password.1 $(PREFIX)/share/man/man1//gen-password.1 
 
