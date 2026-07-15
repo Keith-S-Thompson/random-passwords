@@ -47,8 +47,8 @@ install: manpages prefix_is_defined
 	ln -sf gen-passphrase $(PREFIX)/bin/gpp
 	$(INSTALL_PROGRAM) gen-password $(PREFIX)/bin
 	ln -sf gen-password $(PREFIX)/bin/gpw
-	$(INSTALL_FILE) doc/gen-passphrase.1 $(PREFIX)/share/man/man1//gen-passphrase.1 
-	$(INSTALL_FILE) doc/gen-password.1 $(PREFIX)/share/man/man1//gen-password.1 
+	$(INSTALL_FILE) doc/gen-passphrase.1 $(PREFIX)/share/man/man1/gen-passphrase.1 
+	$(INSTALL_FILE) doc/gen-password.1 $(PREFIX)/share/man/man1/gen-password.1 
 
 clean:
 	rm -f $(MANPAGES) $(PDF) $(MARKDOWN)
